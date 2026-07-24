@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const publicBasePath =
+  process.env.GITHUB_PAGES === "true" ? "/full-stack-expedition" : "";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://full-stack-expedition.flyness.chatgpt.site"),
   title: "The Full-Stack Expedition",
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
     images: ["/og-phase3.png"],
   },
   icons: {
-    icon: "/favicon.svg",
+    icon: `${publicBasePath}/favicon.svg`,
   },
 };
 
