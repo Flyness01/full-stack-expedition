@@ -374,7 +374,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--sunrise-gold); 
 .code-options button:hover:not(:disabled) { border-color: rgba(244,184,96,.42); }
 .code-options button.correct { color: #c5e7d0; border-color: rgba(79,157,105,.65); background: rgba(79,157,105,.12); }
 .code-options button.wrong { color: #e6b2b2; border-color: rgba(184,92,92,.6); background: rgba(184,92,92,.11); }
+.code-options button.locked { display: flex; visibility: visible; opacity: 1; cursor: default; }
 .code-options svg { width: .85rem; }
+.applied-repair { min-height: 58px; margin-top: .7rem; padding: .65rem .8rem; display: flex; align-items: center; gap: .7rem; border: 1px solid rgba(79,157,105,.55); border-radius: .4rem; color: #c5e7d0; background: rgba(79,157,105,.1); }
+.applied-repair > svg { width: 1rem; flex: 0 0 auto; }
+.applied-repair span { display: grid; gap: .18rem; }
+.applied-repair small { color: rgba(243,235,221,.46); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
+.applied-repair code { font-size: .68rem; }
 .inline-feedback { min-height: 42px; display: flex; gap: .45rem; align-items: center; font-size: .65rem; }
 .inline-feedback svg { flex: 0 0 auto; width: .85rem; color: var(--success-green); }
 .checkpoint-preview { min-height: 430px; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid rgba(169,200,216,.22); border-radius: .7rem; background: linear-gradient(145deg, rgba(29,53,87,.82), rgba(47,93,80,.66)); box-shadow: 0 22px 55px rgba(3,15,22,.24); }

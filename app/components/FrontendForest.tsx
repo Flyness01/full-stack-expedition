@@ -161,18 +161,24 @@ export function FrontendForest({
           <div className="code-options">
             {LAYOUT_OPTIONS.map((option) => (
               <button
-                className={layoutChoice === option ? (option.includes("column") ? "correct" : "wrong") : ""}
-                disabled={solved("layout")}
+                className={`${layoutChoice === option ? (option.includes("column") ? "correct" : "wrong") : ""} ${solved("layout") ? "locked" : ""}`}
+                aria-disabled={solved("layout")}
                 key={option}
-                onClick={() => chooseLayout(option)}
+                onClick={() => !solved("layout") && chooseLayout(option)}
               >
                 <code>{option}</code>{layoutChoice === option && (option.includes("column") ? <Check /> : "×")}
               </button>
             ))}
           </div>
+          {solved("layout") && (
+            <div className="applied-repair" role="status">
+              <Check />
+              <span><small>Applied repair</small><code>flex-direction: column;</code></span>
+            </div>
+          )}
           <p className="inline-feedback" aria-live="polite">{solved("layout") && <Check />} {feedback}</p>
         </div>
-        <motion.div className={`checkpoint-preview ${solved("layout") ? "fixed" : ""}`} layout>
+        <motion.div className={`checkpoint-preview ${solved("layout") ? "fixed" : ""}`}>
           <small>Live trail preview</small>
           <div>
             <Trees />
