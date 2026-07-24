@@ -30,4 +30,13 @@ export const STARTER_ITEMS = [
   { id: "mindset", name: "Beginner’s Mindset", note: "Leaves room for everything still to learn.", icon: Brain },
 ] as const;
 
+export const MEMORY_TILES = [
+  { id: "arrive", label: "Arrive", detail: "A new city and a new trail.", icon: Footprints },
+  { id: "meet", label: "Meet the team", detail: "Names became familiar faces.", icon: Network },
+  { id: "chicago", label: "Explore Chicago", detail: "A skyline full of possibility.", icon: Mountain },
+  { id: "whirlyball", label: "Play WhirlyBall", detail: "Fast turns, loud laughs, good memories.", icon: Sparkles },
+  { id: "connections", label: "Build connections", detail: "Belonging grew between the work.", icon: Trees },
+  { id: "reflect", label: "Reflect", detail: "The trail looks different in hindsight.", icon: Brain },
+] as const;
+
 export const STORAGE_KEY = "full-stack-expedition-progress-v1";

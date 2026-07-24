@@ -7,6 +7,10 @@ export type ExpeditionProgress = {
   started: boolean;
   packedItems: string[];
   elevation: number;
+  currentStage: string;
+  completedStages: string[];
+  collectibles: string[];
+  memoryOrder: string[];
   soundEnabled: boolean;
   reducedMotion: boolean;
 };
@@ -15,6 +19,10 @@ const DEFAULT_PROGRESS: ExpeditionProgress = {
   started: false,
   packedItems: [],
   elevation: 1240,
+  currentStage: "trailhead",
+  completedStages: [],
+  collectibles: [],
+  memoryOrder: [],
   soundEnabled: false,
   reducedMotion: false,
 };

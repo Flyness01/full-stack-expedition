@@ -5,6 +5,8 @@ import { ArrowRight, Backpack, Minus, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { STARTER_ITEMS } from "../data/expedition";
 import { useExpeditionProgress } from "../hooks/useExpeditionProgress";
+import { useAmbientAudio } from "../hooks/useAmbientAudio";
+import { FirstSummerTrail } from "./FirstSummerTrail";
 import { GameDashboard } from "./GameDashboard";
 import { Hiker } from "./Hiker";
 import { MountainScene } from "./MountainScene";
@@ -17,6 +19,8 @@ export function Expedition() {
   const [packing, setPacking] = useState(false);
   const [packed, setPacked] = useState<string[]>(progress.packedItems);
   const [showDashboard, setShowDashboard] = useState(progress.started);
+  const [view, setView] = useState<"dashboard" | "summer">("dashboard");
+  useAmbientAudio(progress.soundEnabled);
 
   useEffect(() => {
     if (hydrated) {
@@ -44,12 +48,13 @@ export function Expedition() {
     setPacking(false);
     setShowDashboard(false);
     setMapOpen(false);
+    setView("dashboard");
   }
 
   if (!hydrated) return <div className="loading-screen"><MountainScene started={false} reducedMotion /></div>;
 
   return (
-    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""}`}>
+    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to expedition</a>
       <MountainScene started={showDashboard} reducedMotion={progress.reducedMotion} />
       <TopControls
@@ -124,11 +129,35 @@ export function Expedition() {
               )}
             </AnimatePresence>
           </motion.main>
+        ) : view === "summer" ? (
+          <FirstSummerTrail
+            key="summer"
+            initialOrder={progress.memoryOrder}
+            alreadyComplete={progress.completedStages.includes("summer-one")}
+            reducedMotion={progress.reducedMotion}
+            onBack={() => setView("dashboard")}
+            onSaveOrder={(memoryOrder) => update({ memoryOrder })}
+            onComplete={() => update({
+              elevation: 1880,
+              currentStage: "curiosity",
+              completedStages: Array.from(new Set([...progress.completedStages, "trailhead", "summer-one"])),
+              collectibles: Array.from(new Set([...progress.collectibles, "reflection-map"])),
+            })}
+          />
         ) : (
-          <GameDashboard key="dashboard" packedItems={packed} onMap={() => setMapOpen(true)} reducedMotion={progress.reducedMotion} />
+          <GameDashboard
+            key="dashboard"
+            packedItems={packed}
+            collectibles={progress.collectibles}
+            completedStages={progress.completedStages}
+            elevation={progress.elevation}
+            onMap={() => setMapOpen(true)}
+            onContinue={() => setView("summer")}
+            reducedMotion={progress.reducedMotion}
+          />
         )}
       </AnimatePresence>
-      <TrailMap open={mapOpen} onClose={() => setMapOpen(false)} />
+      <TrailMap open={mapOpen} onClose={() => setMapOpen(false)} completedStages={progress.completedStages} currentStage={progress.currentStage} />
     </div>
   );
 }

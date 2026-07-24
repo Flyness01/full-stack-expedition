@@ -1,7 +1,12 @@
 import { Lock, MapPin, X } from "lucide-react";
 import { TRAIL_STAGES } from "../data/expedition";
 
-export function TrailMap({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function TrailMap({ open, onClose, completedStages = [], currentStage = "trailhead" }: {
+  open: boolean;
+  onClose: () => void;
+  completedStages?: string[];
+  currentStage?: string;
+}) {
   if (!open) return null;
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
@@ -14,17 +19,18 @@ export function TrailMap({ open, onClose }: { open: boolean; onClose: () => void
           <div className="map-route" />
           {TRAIL_STAGES.map((stage, index) => {
             const Icon = stage.icon;
-            const current = index === 0;
+            const current = stage.id === currentStage;
+            const completed = completedStages.includes(stage.id);
             return (
-              <article className={`map-stop ${current ? "current" : "locked"}`} key={stage.id}>
-                <span className="map-marker">{current ? <MapPin /> : <Lock />}</span>
+              <article className={`map-stop ${current ? "current" : completed ? "completed" : "locked"}`} key={stage.id}>
+                <span className="map-marker">{current || completed ? <MapPin /> : <Lock />}</span>
                 <Icon />
-                <div><strong>{stage.title}</strong><small>{current ? "Current checkpoint" : `${stage.elevation.toLocaleString()} ft · Locked`}</small></div>
+                <div><strong>{stage.title}</strong><small>{current ? "Current checkpoint" : completed ? "Trail completed" : `${stage.elevation.toLocaleString()} ft · Locked`}</small></div>
               </article>
             );
           })}
         </div>
-        <footer><span><MapPin /> Current: Trailhead</span><span>1,240 / 8,000 ft</span></footer>
+        <footer><span><MapPin /> Current: {TRAIL_STAGES.find((stage) => stage.id === currentStage)?.title}</span><span>{currentStage === "curiosity" ? "1,880" : "1,240"} / 8,000 ft</span></footer>
       </section>
     </div>
   );
