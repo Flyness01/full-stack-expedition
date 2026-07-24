@@ -18,18 +18,18 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
-const LAYOUT_OPTIONS = [
-  "display: none;",
-  "flex-direction: column;",
-  "overflow: hidden;",
-  "position: absolute;",
+const LAYOUT_PATCHES = [
+  { id: "hidden", rule: "display: none;", label: "Remove from flow" },
+  { id: "vertical", rule: "flex-direction: column;", label: "Turn the axis" },
+  { id: "clip", rule: "overflow: hidden;", label: "Clip the edges" },
+  { id: "float", rule: "position: absolute;", label: "Lift from flow" },
 ] as const;
 
-const ACCESSIBILITY_OPTIONS = [
-  { id: "ghost", label: "→", className: "a11y-ghost", note: "No accessible name" },
-  { id: "faint", label: "Continue", className: "a11y-faint", note: "Text disappears into the mist" },
-  { id: "tiny", label: "Next", className: "a11y-tiny", note: "Too small for the crossing" },
-  { id: "clear", label: "Continue to Frontend Forest", className: "a11y-clear", note: "Clear label, contrast, focus, and touch target" },
+const ACCESSIBILITY_REPAIRS = [
+  { id: "label", label: "Clarify the label", detail: "Say where the crossing leads." },
+  { id: "contrast", label: "Raise the contrast", detail: "Bring the words out of the mist." },
+  { id: "focus", label: "Mark keyboard focus", detail: "Make the active step visible." },
+  { id: "target", label: "Widen the target", detail: "Leave room for touch and movement." },
 ] as const;
 
 const TREE_SOLUTION = ["App", "TrailMap", "CheckpointCard", "HintButton", "ProgressBar"];
@@ -54,10 +54,11 @@ export function FrontendForest({
 }) {
   const [completed, setCompleted] = useState<string[]>(alreadyComplete ? ["layout", "accessibility", "components"] : initialCompleted);
   const [tree, setTree] = useState<string[]>(initialTree.length === TREE_SOLUTION.length ? initialTree : INITIAL_TREE);
-  const [layoutChoice, setLayoutChoice] = useState("");
-  const [accessibilityChoice, setAccessibilityChoice] = useState("");
+  const [layoutChoice, setLayoutChoice] = useState(solvedInitial(initialCompleted, alreadyComplete, "layout") ? "flex-direction: column;" : "");
+  const [a11yRepairs, setA11yRepairs] = useState<string[]>(solvedInitial(initialCompleted, alreadyComplete, "accessibility") ? ACCESSIBILITY_REPAIRS.map((repair) => repair.id) : []);
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Inspect the broken rule and choose the repair.");
+  const [feedback, setFeedback] = useState("The highlighted declaration controls the direction of the trail card.");
+  const [treeAttempts, setTreeAttempts] = useState(0);
 
   const solved = (id: string) => completed.includes(id);
   const allSolved = completed.length === 3 || alreadyComplete;
@@ -72,16 +73,22 @@ export function FrontendForest({
   function chooseLayout(option: string) {
     setLayoutChoice(option);
     if (option === "flex-direction: column;") {
-      setFeedback("The card settles into a clear vertical path.");
+      setFeedback("The sign straightens. The card now follows a clear vertical path.");
       markSolved("layout");
+    } else if (option === "display: none;") {
+      setFeedback("The whole checkpoint vanishes into the trees. The path still needs its content.");
+    } else if (option === "overflow: hidden;") {
+      setFeedback("The edges are trimmed, but the trail still runs sideways.");
     } else {
-      setFeedback("That rule hides or displaces the problem instead of repairing the flow.");
+      setFeedback("The card lifts out of the trail flow. Try a patch that changes its direction.");
     }
   }
 
-  function chooseAccessibility(id: string) {
-    setAccessibilityChoice(id);
-    if (id === "clear") markSolved("accessibility");
+  function toggleAccessibility(id: string) {
+    if (solved("accessibility")) return;
+    const next = a11yRepairs.includes(id) ? a11yRepairs.filter((repair) => repair !== id) : [...a11yRepairs, id];
+    setA11yRepairs(next);
+    if (next.length === ACCESSIBILITY_REPAIRS.length) markSolved("accessibility");
   }
 
   function moveBlock(from: number, to: number) {
@@ -109,6 +116,8 @@ export function FrontendForest({
   function checkTree() {
     if (TREE_SOLUTION.every((item, index) => tree[index] === item)) {
       markSolved("components", tree);
+    } else {
+      setTreeAttempts((attempts) => attempts + 1);
     }
   }
 
@@ -150,25 +159,34 @@ export function FrontendForest({
         <div className="puzzle-copy">
           <p className="eyebrow">Repair 01 · Layout clearing</p>
           <h2>Turn the card toward the trail.</h2>
-          <p>The checkpoint’s content is squeezed into one horizontal line. Choose the single CSS rule that restores its intended flow.</p>
-          <div className="code-panel">
+          <p>The checkpoint’s content is squeezed into one horizontal line. Pull a patch from the workbench and apply it to the highlighted declaration.</p>
+          <div
+            className={`code-panel patch-target ${layoutChoice ? "has-patch" : ""}`}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => chooseLayout(event.dataTransfer.getData("text/plain"))}
+          >
             <span>.checkpoint-card {"{"}</span>
             <span>&nbsp;&nbsp;display: flex;</span>
-            <span className="broken-code">&nbsp;&nbsp;flex-direction: row;</span>
+            <span className="broken-code">&nbsp;&nbsp;{layoutChoice || "flex-direction: row;"} <small>{layoutChoice ? "patch applied" : "drop patch here"}</small></span>
             <span>&nbsp;&nbsp;align-items: center;</span>
             <span>{"}"}</span>
           </div>
-          <div className="code-options">
-            {LAYOUT_OPTIONS.map((option) => (
+          <div className="patch-workbench" aria-label="CSS patch workbench">
+            <small>Patch workbench · drag or tap to test</small>
+            <div>
+            {LAYOUT_PATCHES.map((patch) => (
               <button
-                className={`${layoutChoice === option ? (option.includes("column") ? "correct" : "wrong") : ""} ${solved("layout") ? "locked" : ""}`}
+                className={`${layoutChoice === patch.rule ? "is-applied" : ""} ${solved("layout") ? "locked" : ""}`}
                 aria-disabled={solved("layout")}
-                key={option}
-                onClick={() => !solved("layout") && chooseLayout(option)}
+                draggable={!solved("layout")}
+                onDragStart={(event) => event.dataTransfer.setData("text/plain", patch.rule)}
+                key={patch.id}
+                onClick={() => !solved("layout") && chooseLayout(patch.rule)}
               >
-                <code>{option}</code>{layoutChoice === option && (option.includes("column") ? <Check /> : "×")}
+                <span>{patch.label}</span><code>{patch.rule}</code>
               </button>
             ))}
+            </div>
           </div>
           {solved("layout") && (
             <div className="applied-repair" role="status">
@@ -193,24 +211,42 @@ export function FrontendForest({
         <div className="puzzle-copy">
           <p className="eyebrow">Repair 02 · Accessibility crossing</p>
           <h2>Build a crossing more people can use.</h2>
-          <p>Choose the trail control with a descriptive label, readable contrast, a visible focus state, and a comfortable target.</p>
+          <p>A crossing should not ask people to guess. Tune the control until its purpose and state are clear through sight, keyboard, and touch.</p>
         </div>
-        <div className="button-crossing">
-          {ACCESSIBILITY_OPTIONS.map((option) => (
+        <div className="accessibility-workbench">
+          <div className="crossing-preview">
+            <small>Trail control · live preview</small>
             <button
-              key={option.id}
-              className={`${option.className} ${accessibilityChoice === option.id ? (option.id === "clear" ? "correct" : "wrong") : ""}`}
-              disabled={solved("accessibility")}
-              aria-label={option.id === "ghost" ? "Unlabeled arrow option" : option.label}
-              onClick={() => chooseAccessibility(option.id)}
+              className={[
+                a11yRepairs.includes("contrast") ? "has-contrast" : "",
+                a11yRepairs.includes("focus") ? "has-focus" : "",
+                a11yRepairs.includes("target") ? "has-target" : "",
+              ].join(" ")}
+              tabIndex={-1}
             >
-              <span>{option.label}</span><small>{option.note}</small>
-              {accessibilityChoice === option.id && (option.id === "clear" ? <Check /> : "Try another crossing")}
+              {a11yRepairs.includes("label") ? "Continue to Frontend Forest" : "→"}
             </button>
-          ))}
+          </div>
+          <div className="a11y-controls">
+            {ACCESSIBILITY_REPAIRS.map((repair) => {
+              const active = a11yRepairs.includes(repair.id);
+              return (
+                <button
+                  key={repair.id}
+                  className={active ? "active" : ""}
+                  aria-pressed={active}
+                  onClick={() => toggleAccessibility(repair.id)}
+                >
+                  <span>{active ? <Check /> : <Eye />}</span>
+                  <strong>{repair.label}</strong>
+                  <small>{repair.detail}</small>
+                </button>
+              );
+            })}
+          </div>
           <AnimatePresence>
             {solved("accessibility") && (
-              <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+              <motion.p className="crossing-message" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
                 <Eye /> Good interfaces communicate clearly before anyone has to guess.
               </motion.p>
             )}
@@ -222,8 +258,17 @@ export function FrontendForest({
         <div className="puzzle-copy">
           <p className="eyebrow">Repair 03 · Component canopy</p>
           <h2>Give every component a sensible place.</h2>
-          <p>Arrange the blocks from the root downward. The first four form one branch; the ProgressBar remains a direct child of App.</p>
-          <div className="tree-legend"><span>App → TrailMap → CheckpointCard → HintButton</span><span>App → ProgressBar</span></div>
+          <p>Arrange the blocks into a component tree. Think about ownership: what contains the route, what belongs to a checkpoint, and what should remain visible across the whole experience.</p>
+          {treeAttempts > 0 && (
+            <div className="canopy-hint" aria-live="polite">
+              <Sparkles />
+              <span>
+                {treeAttempts === 1 && "The branches rustle, but the data still has too far to travel."}
+                {treeAttempts === 2 && "Hint: the map owns the checkpoints it displays."}
+                {treeAttempts >= 3 && "Hint: progress should stay close to the root, while a hint belongs to its checkpoint."}
+              </span>
+            </div>
+          )}
         </div>
         <div className="component-builder">
           <p>Select two blocks to swap them, drag them, or use the arrow controls.</p>
@@ -239,7 +284,7 @@ export function FrontendForest({
               >
                 <button className="block-main" onClick={() => placeSelected(index)} disabled={solved("components")}>
                   <GripVertical /><code>{block}</code>
-                  <small>{index === 0 ? "root" : index === 4 ? "direct child" : `level ${index}`}</small>
+                  <small>{index === 0 ? "canopy root" : index === 4 ? "second branch" : "nested branch"}</small>
                 </button>
                 <span className="block-moves">
                   <button aria-label={`Move ${block} up`} onClick={() => moveBlock(index, index - 1)} disabled={index === 0 || solved("components")}><ChevronUp /></button>
@@ -271,4 +316,8 @@ export function FrontendForest({
       </AnimatePresence>
     </motion.main>
   );
+}
+
+function solvedInitial(completed: string[], alreadyComplete: boolean, id: string) {
+  return alreadyComplete || completed.includes(id);
 }

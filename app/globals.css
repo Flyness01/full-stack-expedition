@@ -381,6 +381,21 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--sunrise-gold); 
 .applied-repair span { display: grid; gap: .18rem; }
 .applied-repair small { color: rgba(243,235,221,.46); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
 .applied-repair code { font-size: .68rem; }
+.patch-target { position: relative; transition: border-color .25s ease, box-shadow .25s ease; }
+.patch-target:hover { border-color: rgba(244,184,96,.42); box-shadow: inset 0 0 25px rgba(244,184,96,.04); }
+.patch-target.has-patch { border-color: rgba(169,200,216,.35); }
+.broken-code { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.broken-code small { color: rgba(243,235,221,.3); font-family: inherit; font-size: .5rem; text-decoration: none; letter-spacing: .08em; text-transform: uppercase; }
+.patch-workbench { margin-top: .7rem; padding: .8rem; border: 1px solid rgba(243,235,221,.11); border-radius: .45rem; background: rgba(16,28,44,.42); }
+.patch-workbench > small { display: block; margin-bottom: .55rem; color: rgba(243,235,221,.34); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
+.patch-workbench > div { display: grid; grid-template-columns: 1fr 1fr; gap: .42rem; }
+.patch-workbench button { min-height: 59px; padding: .6rem .7rem; display: grid; gap: .22rem; text-align: left; color: rgba(243,235,221,.68); border: 1px solid rgba(169,200,216,.13); border-radius: .35rem; background: rgba(29,53,87,.48); cursor: grab; transition: .2s ease; }
+.patch-workbench button:hover:not(.locked) { transform: translateY(-2px); border-color: rgba(244,184,96,.4); }
+.patch-workbench button span { font-size: .52rem; color: rgba(243,235,221,.36); letter-spacing: .06em; text-transform: uppercase; }
+.patch-workbench button code { font-size: .63rem; }
+.patch-workbench button.is-applied { border-color: rgba(169,200,216,.55); color: #d5e6e7; background: rgba(169,200,216,.1); }
+.patch-workbench button.locked { opacity: .68; cursor: default; }
+.patch-workbench button.locked.is-applied { opacity: 1; border-color: rgba(79,157,105,.6); color: #c5e7d0; background: rgba(79,157,105,.11); }
 .inline-feedback { min-height: 42px; display: flex; gap: .45rem; align-items: center; font-size: .65rem; }
 .inline-feedback svg { flex: 0 0 auto; width: .85rem; color: var(--success-green); }
 .checkpoint-preview { min-height: 430px; padding: 1.2rem; display: flex; flex-direction: column; border: 1px solid rgba(169,200,216,.22); border-radius: .7rem; background: linear-gradient(145deg, rgba(29,53,87,.82), rgba(47,93,80,.66)); box-shadow: 0 22px 55px rgba(3,15,22,.24); }
@@ -405,8 +420,27 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--sunrise-gold); 
 .a11y-clear:focus-visible { outline: 3px solid white; outline-offset: 4px; }
 .button-crossing > p { grid-column: 1 / -1; display: flex; align-items: center; gap: .55rem; margin: .5rem 0 0; color: #c5e7d0; font-size: .68rem; }
 .button-crossing > p svg { width: 1rem; }
+.accessibility-workbench { display: grid; grid-template-columns: .86fr 1.14fr; gap: .75rem; }
+.crossing-preview { min-height: 315px; padding: 1rem; display: flex; flex-direction: column; border: 1px solid rgba(169,200,216,.18); border-radius: .55rem; background: linear-gradient(160deg, rgba(29,53,87,.65), rgba(47,93,80,.48)); }
+.crossing-preview > small { color: rgba(243,235,221,.34); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
+.crossing-preview > button { width: 33px; min-height: 29px; margin: auto; overflow: hidden; padding: 0 .35rem; white-space: nowrap; color: #617d78; border: 1px solid #58766f; border-radius: .25rem; background: #66867e; font-size: .58rem; transition: .35s ease; }
+.crossing-preview > button.has-contrast { color: var(--night-navy); border-color: #e5b25f; background: var(--sunrise-gold); }
+.crossing-preview > button.has-target { width: 88%; min-height: 52px; padding: 0 .9rem; }
+.crossing-preview > button.has-focus { outline: 3px solid var(--trail-cream); outline-offset: 4px; }
+.a11y-controls { display: grid; gap: .45rem; }
+.a11y-controls button { min-height: 70px; display: grid; grid-template-columns: 32px 1fr; grid-template-rows: auto auto; gap: .12rem .65rem; align-items: center; padding: .65rem; text-align: left; color: var(--trail-cream); border: 1px solid rgba(243,235,221,.12); border-radius: .4rem; background: rgba(16,28,44,.55); cursor: pointer; transition: .2s ease; }
+.a11y-controls button > span { grid-row: 1 / 3; width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid rgba(243,235,221,.13); border-radius: 50%; color: rgba(243,235,221,.4); }
+.a11y-controls button svg { width: .8rem; }
+.a11y-controls button strong { align-self: end; font-size: .68rem; }
+.a11y-controls button small { align-self: start; color: rgba(243,235,221,.38); font-size: .53rem; line-height: 1.3; }
+.a11y-controls button.active { border-color: rgba(79,157,105,.5); background: rgba(79,157,105,.1); }
+.a11y-controls button.active > span { color: white; border-color: var(--success-green); background: var(--success-green); }
+.crossing-message { grid-column: 1 / -1; display: flex; align-items: center; gap: .55rem; margin: .2rem 0 0; color: #c5e7d0; font-size: .68rem; }
+.crossing-message svg { width: 1rem; }
 
 .tree-legend { display: grid; gap: .35rem; margin-top: 1.2rem; color: #bed5d4; font-family: ui-monospace, monospace; font-size: .62rem; }
+.canopy-hint { min-height: 58px; margin-top: 1.2rem; padding: .7rem .8rem; display: flex; align-items: center; gap: .7rem; color: #d7c69f; border: 1px solid rgba(244,184,96,.25); border-radius: .4rem; background: rgba(244,184,96,.06); font-size: .64rem; line-height: 1.45; }
+.canopy-hint svg { width: 1rem; flex: 0 0 auto; color: var(--sunrise-gold); }
 .component-builder { padding: 1rem; border: 1px solid rgba(169,200,216,.2); border-radius: .6rem; background: rgba(11,27,38,.68); }
 .component-builder > p { margin: 0 0 .8rem; color: rgba(243,235,221,.4); font-size: .58rem; }
 .component-builder ol { list-style: none; margin: 0; padding: 0; display: grid; gap: .42rem; }
@@ -545,6 +579,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--sunrise-gold); 
   .repair-markers span svg { width: .8rem; }
   .frontend-puzzle { padding: 4rem 0; }
   .code-options, .button-crossing { grid-template-columns: 1fr; }
+  .patch-workbench > div, .accessibility-workbench { grid-template-columns: 1fr; }
+  .crossing-preview { min-height: 220px; }
   .button-crossing > p { grid-column: 1; }
   .checkpoint-preview { min-height: 330px; }
   .checkpoint-preview > div { flex-direction: column; text-align: center; }
