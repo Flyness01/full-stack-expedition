@@ -3,10 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Backpack, Minus, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
-import { STARTER_ITEMS } from "../data/expedition";
+import { CURIOSITY_ITEMS, STARTER_ITEMS } from "../data/expedition";
 import { useExpeditionProgress } from "../hooks/useExpeditionProgress";
 import { useAmbientAudio } from "../hooks/useAmbientAudio";
 import { FirstSummerTrail } from "./FirstSummerTrail";
+import { CuriosityBackpack } from "./CuriosityBackpack";
 import { GameDashboard } from "./GameDashboard";
 import { Hiker } from "./Hiker";
 import { MountainScene } from "./MountainScene";
@@ -19,7 +20,7 @@ export function Expedition() {
   const [packing, setPacking] = useState(false);
   const [packed, setPacked] = useState<string[]>(progress.packedItems);
   const [showDashboard, setShowDashboard] = useState(progress.started);
-  const [view, setView] = useState<"dashboard" | "summer">("dashboard");
+  const [view, setView] = useState<"dashboard" | "summer" | "curiosity">("dashboard");
   useAmbientAudio(progress.soundEnabled);
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export function Expedition() {
   if (!hydrated) return <div className="loading-screen"><MountainScene started={false} reducedMotion /></div>;
 
   return (
-    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""}`}>
+    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""} ${view === "curiosity" ? "curiosity-mode" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to expedition</a>
       <MountainScene started={showDashboard} reducedMotion={progress.reducedMotion} />
       <TopControls
@@ -144,6 +145,22 @@ export function Expedition() {
               collectibles: Array.from(new Set([...progress.collectibles, "reflection-map"])),
             })}
           />
+        ) : view === "curiosity" ? (
+          <CuriosityBackpack
+            key="curiosity"
+            initialSelections={progress.curiositySelections}
+            alreadyComplete={progress.completedStages.includes("curiosity")}
+            reducedMotion={progress.reducedMotion}
+            onBack={() => setView("dashboard")}
+            onSave={(curiositySelections) => update({ curiositySelections })}
+            onComplete={() => update({
+              elevation: 2510,
+              currentStage: "frontend",
+              curiositySelections: CURIOSITY_ITEMS.filter((item) => item.helpful).map((item) => item.id),
+              completedStages: Array.from(new Set([...progress.completedStages, "curiosity"])),
+              collectibles: Array.from(new Set([...progress.collectibles, "sponge-badge"])),
+            })}
+          />
         ) : (
           <GameDashboard
             key="dashboard"
@@ -152,12 +169,12 @@ export function Expedition() {
             completedStages={progress.completedStages}
             elevation={progress.elevation}
             onMap={() => setMapOpen(true)}
-            onContinue={() => setView("summer")}
+            onContinue={(stage) => setView(stage)}
             reducedMotion={progress.reducedMotion}
           />
         )}
       </AnimatePresence>
-      <TrailMap open={mapOpen} onClose={() => setMapOpen(false)} completedStages={progress.completedStages} currentStage={progress.currentStage} />
+      <TrailMap open={mapOpen} onClose={() => setMapOpen(false)} completedStages={progress.completedStages} currentStage={progress.currentStage} elevation={progress.elevation} />
     </div>
   );
 }

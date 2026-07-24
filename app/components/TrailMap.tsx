@@ -1,11 +1,12 @@
 import { Lock, MapPin, X } from "lucide-react";
 import { TRAIL_STAGES } from "../data/expedition";
 
-export function TrailMap({ open, onClose, completedStages = [], currentStage = "trailhead" }: {
+export function TrailMap({ open, onClose, completedStages = [], currentStage = "trailhead", elevation = 1240 }: {
   open: boolean;
   onClose: () => void;
   completedStages?: string[];
   currentStage?: string;
+  elevation?: number;
 }) {
   if (!open) return null;
   return (
@@ -30,7 +31,7 @@ export function TrailMap({ open, onClose, completedStages = [], currentStage = "
             );
           })}
         </div>
-        <footer><span><MapPin /> Current: {TRAIL_STAGES.find((stage) => stage.id === currentStage)?.title}</span><span>{currentStage === "curiosity" ? "1,880" : "1,240"} / 8,000 ft</span></footer>
+        <footer><span><MapPin /> Current: {TRAIL_STAGES.find((stage) => stage.id === currentStage)?.title}</span><span>{elevation.toLocaleString()} / 8,000 ft</span></footer>
       </section>
     </div>
   );

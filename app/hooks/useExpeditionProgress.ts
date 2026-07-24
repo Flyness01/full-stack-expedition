@@ -11,6 +11,7 @@ export type ExpeditionProgress = {
   completedStages: string[];
   collectibles: string[];
   memoryOrder: string[];
+  curiositySelections: string[];
   soundEnabled: boolean;
   reducedMotion: boolean;
 };
@@ -23,6 +24,7 @@ const DEFAULT_PROGRESS: ExpeditionProgress = {
   completedStages: [],
   collectibles: [],
   memoryOrder: [],
+  curiositySelections: [],
   soundEnabled: false,
   reducedMotion: false,
 };

@@ -9,13 +9,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Full-Stack Expedition",
     description: "Two summers. One team. Countless lessons.",
-    images: [{ url: "/og.png", width: 1536, height: 1024, alt: "The Full-Stack Expedition mountain trail" }],
+    images: [{ url: "/og-phase3.png", width: 1536, height: 1024, alt: "The Full-Stack Expedition backpack of curiosity" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "The Full-Stack Expedition",
     description: "Two summers. One team. Countless lessons.",
-    images: ["/og.png"],
+    images: ["/og-phase3.png"],
   },
   icons: {
     icon: "/favicon.svg",
