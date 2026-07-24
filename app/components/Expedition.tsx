@@ -9,6 +9,7 @@ import { useAmbientAudio } from "../hooks/useAmbientAudio";
 import { FirstSummerTrail } from "./FirstSummerTrail";
 import { CuriosityBackpack } from "./CuriosityBackpack";
 import { GameDashboard } from "./GameDashboard";
+import { FrontendForest } from "./FrontendForest";
 import { Hiker } from "./Hiker";
 import { MountainScene } from "./MountainScene";
 import { TopControls } from "./TopControls";
@@ -20,7 +21,7 @@ export function Expedition() {
   const [packing, setPacking] = useState(false);
   const [packed, setPacked] = useState<string[]>(progress.packedItems);
   const [showDashboard, setShowDashboard] = useState(progress.started);
-  const [view, setView] = useState<"dashboard" | "summer" | "curiosity">("dashboard");
+  const [view, setView] = useState<"dashboard" | "summer" | "curiosity" | "frontend">("dashboard");
   useAmbientAudio(progress.soundEnabled);
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export function Expedition() {
   if (!hydrated) return <div className="loading-screen"><MountainScene started={false} reducedMotion /></div>;
 
   return (
-    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""} ${view === "curiosity" ? "curiosity-mode" : ""}`}>
+    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""} ${view === "curiosity" ? "curiosity-mode" : ""} ${view === "frontend" ? "frontend-mode" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to expedition</a>
       <MountainScene started={showDashboard} reducedMotion={progress.reducedMotion} />
       <TopControls
@@ -159,6 +160,24 @@ export function Expedition() {
               curiositySelections: CURIOSITY_ITEMS.filter((item) => item.helpful).map((item) => item.id),
               completedStages: Array.from(new Set([...progress.completedStages, "curiosity"])),
               collectibles: Array.from(new Set([...progress.collectibles, "sponge-badge"])),
+            })}
+          />
+        ) : view === "frontend" ? (
+          <FrontendForest
+            key="frontend"
+            initialCompleted={progress.frontendCompleted}
+            initialTree={progress.componentTree}
+            alreadyComplete={progress.completedStages.includes("frontend")}
+            reducedMotion={progress.reducedMotion}
+            onBack={() => setView("dashboard")}
+            onSave={(frontendCompleted, componentTree) => update({ frontendCompleted, componentTree })}
+            onComplete={() => update({
+              elevation: 3260,
+              currentStage: "backend",
+              frontendCompleted: ["layout", "accessibility", "components"],
+              componentTree: ["App", "TrailMap", "CheckpointCard", "HintButton", "ProgressBar"],
+              completedStages: Array.from(new Set([...progress.completedStages, "frontend"])),
+              collectibles: Array.from(new Set([...progress.collectibles, "interface-compass"])),
             })}
           />
         ) : (
