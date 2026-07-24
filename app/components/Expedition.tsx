@@ -10,6 +10,7 @@ import { FirstSummerTrail } from "./FirstSummerTrail";
 import { CuriosityBackpack } from "./CuriosityBackpack";
 import { GameDashboard } from "./GameDashboard";
 import { FrontendForest } from "./FrontendForest";
+import { BackendCaverns } from "./BackendCaverns";
 import { Hiker } from "./Hiker";
 import { MountainScene } from "./MountainScene";
 import { TopControls } from "./TopControls";
@@ -21,7 +22,7 @@ export function Expedition() {
   const [packing, setPacking] = useState(false);
   const [packed, setPacked] = useState<string[]>(progress.packedItems);
   const [showDashboard, setShowDashboard] = useState(progress.started);
-  const [view, setView] = useState<"dashboard" | "summer" | "curiosity" | "frontend">("dashboard");
+  const [view, setView] = useState<"dashboard" | "summer" | "curiosity" | "frontend" | "backend">("dashboard");
   useAmbientAudio(progress.soundEnabled);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export function Expedition() {
   if (!hydrated) return <div className="loading-screen"><MountainScene started={false} reducedMotion /></div>;
 
   return (
-    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""} ${view === "curiosity" ? "curiosity-mode" : ""} ${view === "frontend" ? "frontend-mode" : ""}`}>
+    <div className={`expedition ${showDashboard ? "dashboard-mode" : ""} ${view === "summer" ? "summer-mode" : ""} ${view === "curiosity" ? "curiosity-mode" : ""} ${view === "frontend" ? "frontend-mode" : ""} ${view === "backend" ? "backend-mode" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to expedition</a>
       <MountainScene started={showDashboard} reducedMotion={progress.reducedMotion} />
       <TopControls
@@ -178,6 +179,24 @@ export function Expedition() {
               componentTree: ["App", "TrailMap", "CheckpointCard", "HintButton", "ProgressBar"],
               completedStages: Array.from(new Set([...progress.completedStages, "frontend"])),
               collectibles: Array.from(new Set([...progress.collectibles, "interface-compass"])),
+            })}
+          />
+        ) : view === "backend" ? (
+          <BackendCaverns
+            key="backend"
+            initialCompleted={progress.backendCompleted}
+            initialFlow={progress.backendFlow}
+            alreadyComplete={progress.completedStages.includes("backend")}
+            reducedMotion={progress.reducedMotion}
+            onBack={() => setView("dashboard")}
+            onSave={(backendCompleted, backendFlow) => update({ backendCompleted, backendFlow })}
+            onComplete={() => update({
+              elevation: 4080,
+              currentStage: "process",
+              backendCompleted: ["flow", "permission", "debug"],
+              backendFlow: ["User Action", "Frontend", "API", "Authorization", "Business Logic", "Database", "Response"],
+              completedStages: Array.from(new Set([...progress.completedStages, "backend"])),
+              collectibles: Array.from(new Set([...progress.collectibles, "full-stack-lantern"])),
             })}
           />
         ) : (

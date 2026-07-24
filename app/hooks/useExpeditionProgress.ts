@@ -14,6 +14,8 @@ export type ExpeditionProgress = {
   curiositySelections: string[];
   frontendCompleted: string[];
   componentTree: string[];
+  backendCompleted: string[];
+  backendFlow: string[];
   soundEnabled: boolean;
   reducedMotion: boolean;
 };
@@ -29,6 +31,8 @@ const DEFAULT_PROGRESS: ExpeditionProgress = {
   curiositySelections: [],
   frontendCompleted: [],
   componentTree: [],
+  backendCompleted: [],
+  backendFlow: [],
   soundEnabled: false,
   reducedMotion: false,
 };

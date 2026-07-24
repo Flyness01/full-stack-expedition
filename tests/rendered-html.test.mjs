@@ -42,3 +42,20 @@ test("Phase 4 includes all three Frontend Forest repairs", async () => {
   assert.match(progress, /componentTree: string\[\]/);
   assert.match(dashboard, /Frontend Forest ready · Phase 4/);
 });
+
+test("Phase 5 includes the three fictional Backend Caverns systems", async () => {
+  const [caverns, progress, dashboard] = await Promise.all([
+    readFile(new URL("../app/components/BackendCaverns.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/hooks/useExpeditionProgress.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/GameDashboard.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(caverns, /System 01 · Request river/);
+  assert.match(caverns, /System 02 · Permission seal/);
+  assert.match(caverns, /System 03 · Echo trace/);
+  assert.match(caverns, /Generalized example · no company systems or code/);
+  assert.match(caverns, /Full-Stack Lantern/);
+  assert.match(progress, /backendCompleted: string\[\]/);
+  assert.match(progress, /backendFlow: string\[\]/);
+  assert.match(dashboard, /Backend Caverns ready · Phase 5/);
+});
