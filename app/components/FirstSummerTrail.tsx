@@ -76,7 +76,7 @@ export function FirstSummerTrail(props: Props) {
         <div className="section-heading">
           <p className="eyebrow">Trail discoveries</p>
           <h2>What made the first summer memorable</h2>
-          <p>This chapter begins with people and place—not a claim that every connection was deep, but an appreciation for the welcome surrounding the work.</p>
+          <p>The first summer unfolded through new people, a new city, and the small moments that made the experience feel welcoming.</p>
         </div>
         <div className="memory-cards">
           <article><span className="memory-number">01</span><div className="arena-mark"><i /><i /><i /></div><p className="eyebrow">Team memory</p><h3>WhirlyBall</h3><p>A fast, chaotic, laughter-filled reminder that connection happens beyond a desk.</p></article>
