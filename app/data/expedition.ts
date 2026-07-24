@@ -49,15 +49,15 @@ export const MEMORY_TILES = [
 
 export const CURIOSITY_ITEMS = [
   { id: "question-mark", name: "Question Mark", detail: "A question is a trailhead.", helpful: true, icon: CircleHelp },
+  { id: "ego", name: "Ego", detail: "It leaves no room for new ideas.", helpful: false, icon: Crown, feedback: "This takes up space meant for learning." },
   { id: "notebook", name: "Notebook", detail: "Make room for what you learn.", helpful: true, icon: LibraryBig },
+  { id: "fear", name: "Fear of Asking", detail: "Silence can make the trail longer.", helpful: false, icon: EyeOff, feedback: "This will make the backpack heavier." },
   { id: "sponge", name: "Sponge", detail: "Absorb first. Understand through practice.", helpful: true, icon: Waves },
   { id: "compass", name: "Compass", detail: "Direction matters more than certainty.", helpful: true, icon: Compass },
-  { id: "laptop", name: "Laptop", detail: "A tool for trying the unfamiliar.", helpful: true, icon: Laptop },
-  { id: "curiosity", name: "Curiosity", detail: "The lightest and most useful supply.", helpful: true, icon: Sparkles },
-  { id: "ego", name: "Ego", detail: "It leaves no room for new ideas.", helpful: false, icon: Crown, feedback: "This takes up space meant for learning." },
-  { id: "fear", name: "Fear of Asking", detail: "Silence can make the trail longer.", helpful: false, icon: EyeOff, feedback: "This will make the backpack heavier." },
   { id: "pretending", name: "Pretending to Understand", detail: "A false shortcut obscures the route.", helpful: false, icon: VenetianMask, feedback: "This item blocks the map." },
+  { id: "laptop", name: "Laptop", detail: "A tool for trying the unfamiliar.", helpful: true, icon: Laptop },
   { id: "perfectionism", name: "Perfectionism", detail: "Care is useful; impossible standards are not.", helpful: false, icon: Gem, feedback: "Useful in small amounts, but too heavy for the entire climb." },
+  { id: "curiosity", name: "Curiosity", detail: "The lightest and most useful supply.", helpful: true, icon: Sparkles },
 ] as const;
 
 export const STORAGE_KEY = "full-stack-expedition-progress-v1";
